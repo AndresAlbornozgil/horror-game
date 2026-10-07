@@ -28,7 +28,7 @@ export function JoinRoomForm({ onJoin, disabled, loading }: JoinRoomFormProps) {
         value={code}
         onChange={(event) => setCode(normalizeRoomCode(event.target.value))}
         maxLength={ROOM_CODE_LENGTH}
-        placeholder="ABCD23"
+        placeholder="Enter Code"
         className="text-center text-xl uppercase"
         disabled={disabled}
       />

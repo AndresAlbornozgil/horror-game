@@ -15,7 +15,7 @@ export function PlayerNameInput({ value, onChange, disabled, autoFocus }: Player
       value={value}
       onChange={(event) => onChange(event.target.value)}
       maxLength={PLAYER_NAME_MAX_LENGTH}
-      placeholder="Who are you?"
+      placeholder="Enter Name"
       disabled={disabled}
       autoFocus={autoFocus}
     />
