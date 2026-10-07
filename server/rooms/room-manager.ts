@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto";
 import {
   DEFAULT_ROOM_SETTINGS,
   DIFFICULTIES,
-  MAPS,
   MAX_PLAYERS_LIMIT,
   MIN_PLAYERS,
 } from "../../src/lib/constants";
@@ -175,11 +174,6 @@ export class RoomManager {
     const input = patch as Partial<Record<keyof RoomSettings, unknown>>;
     const next: RoomSettings = { ...room.settings };
 
-    if (input.map !== undefined) {
-      const map = MAPS.find((m) => m === input.map);
-      if (!map) throw new RoomError("invalid-request", "Unknown map.");
-      next.map = map;
-    }
     if (input.difficulty !== undefined) {
       const difficulty = DIFFICULTIES.find((d) => d === input.difficulty);
       if (!difficulty) throw new RoomError("invalid-request", "Unknown difficulty.");

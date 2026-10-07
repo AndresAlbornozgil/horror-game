@@ -2,9 +2,9 @@
 
 import { Panel } from "@/components/ui/Panel";
 import { Select } from "@/components/ui/Input";
-import { DIFFICULTIES, MAPS, MAX_PLAYERS_LIMIT, MIN_PLAYERS } from "@/lib/constants";
+import { DIFFICULTIES, MAX_PLAYERS_LIMIT, MIN_PLAYERS } from "@/lib/constants";
 import { updateRoomSettings } from "@/multiplayer/room-client";
-import type { Difficulty, GameMap, RoomSettings as RoomSettingsType } from "@/types/room";
+import type { Difficulty, RoomSettings as RoomSettingsType } from "@/types/room";
 
 interface RoomSettingsProps {
   settings: RoomSettingsType;
@@ -19,19 +19,6 @@ export function RoomSettings({ settings, isHost, playerCount }: RoomSettingsProp
   return (
     <Panel title="Settings">
       <div className="flex flex-col gap-5">
-        <Select
-          label="Map"
-          value={settings.map}
-          disabled={!isHost}
-          onChange={(event) => updateRoomSettings({ map: event.target.value as GameMap })}
-        >
-          {MAPS.map((map) => (
-            <option key={map} value={map}>
-              {map}
-            </option>
-          ))}
-        </Select>
-
         <Select
           label="Difficulty"
           value={settings.difficulty}

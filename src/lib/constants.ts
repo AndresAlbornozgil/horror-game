@@ -1,24 +1,9 @@
-export const MAPS = [
-  "Mansion",
-  "Woods",
-  "Asylum",
-  "School",
-  "Hospital",
-  "Mall",
-  "Castle",
-  "Lab",
-  "Prison",
-  "Hotel",
-  "Carnival",
-] as const;
-
 export const DIFFICULTIES = ["Easy", "Normal", "Hard", "Nightmare"] as const;
 
 export const MIN_PLAYERS = 2;
 export const MAX_PLAYERS_LIMIT = 8;
 
 export const DEFAULT_ROOM_SETTINGS = {
-  map: "Mansion",
   difficulty: "Normal",
   maxPlayers: 4,
 } as const;

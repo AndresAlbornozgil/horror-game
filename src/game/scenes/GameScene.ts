@@ -7,6 +7,7 @@ import { SCENE_KEYS } from "../config/scene-keys";
 import { GAME_CONTEXT_KEY, GAME_EVENTS } from "../context";
 import type { GameContext, Roster } from "../context";
 import { Player } from "../player/Player";
+import { generateMap } from "../maps/generate-map";
 
 const { world, player: playerConfig, network } = GAME_CONFIG;
 const GRID_SIZE = 64;
@@ -22,6 +23,8 @@ export class GameScene extends Phaser.Scene {
   private lastSentAt = 0;
   private lastSent = { x: Number.NaN, y: Number.NaN };
   private unsubscribe: (() => void) | null = null;
+  private mapSeed: number | null = null;
+  private mapLayer: Phaser.GameObjects.Graphics | null = null;
 
   constructor() {
     super(SCENE_KEYS.game);
@@ -40,7 +43,7 @@ export class GameScene extends Phaser.Scene {
 
     this.unsubscribe = subscribeGame({
       onConnect: this.requestJoin,
-      onState: ({ players, playerId }) => this.applyState(players, playerId),
+      onState: ({ players, playerId, session }) => this.applyState(players, playerId, session.seed),
       onPlayerJoined: ({ player }) => this.upsertRemote(player),
       onPlayerLeft: ({ playerId }) => this.removeRemote(playerId),
       onPlayerMoved: ({ playerId, x, y }) => this.remotePlayers.get(playerId)?.setTarget(x, y),
@@ -87,8 +90,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   /** Reconciles the scene with the server's player list (first join and every reconnect). */
-  private applyState(players: PlayerData[], localId: string): void {
+  private applyState(players: PlayerData[], localId: string, seed: number): void {
     this.localId = localId;
+    this.buildMap(seed);
     const ids = new Set(players.map((p) => p.id));
     this.remotePlayers.forEach((_, id) => {
       if (!ids.has(id)) this.removeRemote(id, false);
@@ -142,23 +146,24 @@ export class GameScene extends Phaser.Scene {
     for (let x = 0; x <= world.width; x += GRID_SIZE) floor.lineBetween(x, 0, x, world.height);
     for (let y = 0; y <= world.height; y += GRID_SIZE) floor.lineBetween(0, y, world.width, y);
 
-    // A few fixed landmarks so movement is visible against the empty floor.
-    floor.fillStyle(0x161614, 1);
-    floor.lineStyle(2, 0x2b2a27, 1);
-    const landmarks: Array<[number, number, number, number]> = [
-      [700, 600, 320, 160],
-      [2100, 500, 160, 360],
-      [900, 1700, 420, 140],
-      [2200, 1650, 240, 240],
-      [1500, 1200, 120, 120],
-    ];
-    for (const [x, y, w, h] of landmarks) {
-      floor.fillRect(x, y, w, h);
-      floor.strokeRect(x, y, w, h);
-    }
-
     floor.lineStyle(6, 0x8c1f1f, 0.6);
     floor.strokeRect(0, 0, world.width, world.height);
+  }
+
+  /** Builds this game's randomly generated layout from the session seed (rebuilt only if the seed changes). */
+  private buildMap(seed: number): void {
+    if (this.mapSeed === seed) return;
+    this.mapSeed = seed;
+    this.mapLayer?.destroy();
+
+    const layer = this.add.graphics().setDepth(1);
+    layer.fillStyle(0x161614, 1);
+    layer.lineStyle(2, 0x2b2a27, 1);
+    for (const { x, y, width, height } of generateMap(seed, world, GAME_CONFIG.spawn.radius + 160)) {
+      layer.fillRect(x, y, width, height);
+      layer.strokeRect(x, y, width, height);
+    }
+    this.mapLayer = layer;
   }
 
   private cleanup(): void {

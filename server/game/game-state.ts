@@ -1,10 +1,11 @@
-import { randomUUID } from "node:crypto";
+import { randomInt, randomUUID } from "node:crypto";
 import { GAME_CONFIG } from "../../src/config/game.config";
 import type { GameSession } from "../../src/types/game";
 import type { Player } from "../../src/types/player";
 
 export function createSession(roomCode: string): GameSession {
-  return { id: randomUUID(), roomCode, status: "starting" };
+  // A fresh seed per game: every game gets a newly generated map, identical for all players in it.
+  return { id: randomUUID(), roomCode, status: "starting", seed: randomInt(1, 2 ** 31) };
 }
 
 /** Places players evenly on a circle around the world centre. */

@@ -46,9 +46,11 @@ Try it: open <http://localhost:3000>, create a room, then open the invite link (
 ## Flow
 
 1. Enter a name → **Create Room** (or enter a code → **Join Room**). Opening `/lobby/CODE` directly asks for a name first.
-2. Everyone appears in the lobby; the host edits map / difficulty / max players (synced live).
+2. Everyone appears in the lobby; the host edits difficulty / max players (synced live).
 3. Non-host players ready up; the host starts the game.
 4. The server emits `game-starting`; everyone navigates to `/game/CODE`, where Phaser joins the session (`join-game`) and positions sync through `player-move` / `player-moved`.
+
+There is a single map, generated randomly for every game: the server picks a new seed when the host starts, sends it in `game-state`, and every client builds the same layout from it (`src/game/maps/generate-map.ts`).
 
 Room codes are 6 characters from an alphabet without look-alikes (no `I`, `O`, `0`, `1`).
 
