@@ -12,7 +12,7 @@ export function PlayerList({ players, meId, maxPlayers }: PlayerListProps) {
   const emptySlots = Math.max(0, maxPlayers - players.length);
 
   return (
-    <Panel title={`Survivors ${players.length}/${maxPlayers}`}>
+    <Panel title={`Players ${players.length}/${maxPlayers}`}>
       <ul className="flex flex-col gap-2">
         {players.map((player) => (
           <PlayerCard key={player.id} player={player} isMe={player.id === meId} />
