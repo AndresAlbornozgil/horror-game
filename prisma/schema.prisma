@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Persistent data only. Lobby and in-game state live in the Socket.IO server's memory.
+// Placeholder model used to verify the database setup; replace with real models later
+// (player profiles, match history, progression, unlocks, stats, achievements, settings).
+model SetupCheck {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+}

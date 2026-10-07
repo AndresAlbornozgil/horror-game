@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void: #050505;
+  --color-soot: #0c0c0b;
+  --color-iron: #161614;
+  --color-steel: #2b2a27;
+  --color-ash: #75726a;
+  --color-parchment: #b4ad98;
+  --color-bone: #d9d3c3;
+  --color-blood: #8c1f1f;
+  --color-blood-bright: #b92d2d;
+  --font-display: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font-typewriter: "Courier New", Courier, ui-monospace, monospace;
+  --animate-flicker: flicker 7s infinite;
+}
+
+:root {
+  --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+html,
+body {
+  min-height: 100%;
+  background: var(--color-void);
+  color: var(--color-bone);
+  font-family: var(--font-display);
+}
+
+body {
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Film grain over everything */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background-image: var(--noise);
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+}
+
+/* Heavy vignette */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 35%, rgb(0 0 0 / 0.75) 100%);
+}
+
+::selection {
+  background: var(--color-blood);
+  color: var(--color-bone);
+}
+
+/* Worn document surface */
+.paper {
+  position: relative;
+  background-color: var(--color-soot);
+  background-image:
+    linear-gradient(180deg, rgb(217 211 195 / 0.035), transparent 40%),
+    var(--noise);
+  background-blend-mode: normal, soft-light;
+  box-shadow:
+    inset 0 0 40px rgb(0 0 0 / 0.65),
+    0 18px 50px rgb(0 0 0 / 0.7);
+}
+
+/* Small registration marks on the corners, like a pinned form */
+.paper::before,
+.paper::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: var(--color-ash);
+  border-style: solid;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.paper::before {
+  top: 5px;
+  left: 5px;
+  border-width: 1px 0 0 1px;
+}
+
+.paper::after {
+  right: 5px;
+  bottom: 5px;
+  border-width: 0 1px 1px 0;
+}
+
+.label {
+  font-family: var(--font-typewriter);
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-ash);
+}
+
+@keyframes flicker {
+  0%,
+  4%,
+  8%,
+  60%,
+  64%,
+  100% {
+    opacity: 1;
+  }
+  5% {
+    opacity: 0.55;
+  }
+  6% {
+    opacity: 0.9;
+  }
+  7% {
+    opacity: 0.4;
+  }
+  62% {
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-flicker {
+    animation: none;
+  }
+}
